@@ -1,4 +1,3 @@
-import React, { Component } from 'react';
 import { Formik, Field } from 'formik';
 import * as Yup from 'yup';
 import { nanoid } from 'nanoid';
@@ -16,9 +15,9 @@ const FormSchema = Yup.object().shape({
   number: Yup.number().positive('Must be > 6!').required('Required field!'),
 });
 
-export class PhoneForm extends Component {
-  handleSubmit = ({ name, number }, { resetForm }) => {
-    const nameInContacts = this.props.contacts.find(
+export const PhoneForm = ({ onSubmit, contacts }) => {
+  const handleSubmit = ({ name, number }, { resetForm }) => {
+    const nameInContacts = contacts.find(
       contact => contact.name.toLowerCase() === name.toLowerCase()
     );
     if (nameInContacts) {
@@ -26,16 +25,16 @@ export class PhoneForm extends Component {
       return;
     }
     const contact = { id: nanoid(), name, number };
-    this.props.onSubmit(contact);
+    onSubmit(contact);
     resetForm();
   };
 
-  render() {
+  
     return (
       <Formik
         initialValues={{ name: '', number: '' }}
         validationSchema={FormSchema}
-        onSubmit={this.handleSubmit}
+        onSubmit={handleSubmit}
       >
         <Form autoComplete="off">
           <FormField htmlFor="name">
@@ -68,7 +67,7 @@ export class PhoneForm extends Component {
       </Formik>
     );
   }
-}
+
 
 PhoneForm.propTypes = {
   onSubmit: propTypes.func.isRequired,
